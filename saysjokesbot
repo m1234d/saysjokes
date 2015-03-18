@@ -1,0 +1,172 @@
+import time
+import pdb
+import os
+import re
+import praw
+import itertools
+import random
+
+r = praw.Reddit('Joke Bot by /u/m1234d1')
+counter = 0
+time1 = int(input("Time: "))
+r.login()
+import pprint
+pprint.pprint('Logged In!')
+prawWords = ['youre']
+jokes = ['What kind of bagel can fly? A plain bagel!',
+         'What do you call a cow with no legs? Ground beef!',
+         'Why didn\'t the koala get a job? He didn\'t have enough koalifications!',
+         'What\'s brown and sticky? A stick!',
+         'Why did the man become a baker? Because he needed some dough!',
+         'I wondered why the baseball was getting bigger. Then it hit me.',
+         'I\'m reading a book about anti-gravity. It\'s impossible to put down.',
+         'I used to be a banker but then I lost interest',
+         'I\'m glad I know sign language, it\'s pretty handy.',
+         'Did you hear about the guy who got hit in the head with a can of soda? He was lucky it was a soft drink.',
+         'What do sprinters eat before a race? Nothing, they fast.',
+         'What do you call the security guards outside of Samsung? The guardians of the Galaxy!',
+         'What do you call a fish with no eyes? A fsh!',
+         'I think I want a job cleaning mirrors. It\'s something I could really see myself doing',
+         'Why did the tomato blush? Because it saw the salad dressing!',
+         'What do you do when there\'s a sink standing outside your door? You let that sink in.',
+         'What do you call a belt made out of watches? A waist of time!',
+         'I sold my vacuum the other day… all it was doing was collecting dust!',
+         'What did one wall say to the other? Meet you at the corner!',
+         'A man walks into a bar holding a piece of asphalt. The man says, "A beer please, and one for the road!"',
+         'Did you hear about the guy who invented the knock knock joke? He won the "no-bell" prize!',
+         'Why cant a nose be 12 inches long? Because then it\'ll be a foot!',
+         'What do you call a can opener that doesn\'t work? A can\'t opener!',
+         'What did the red light say to the green light? Don\'t look, I\'m changing!',
+         'Why should you not write with a dull pencil? Because it\'s pointless.\n\n ^This ^is ^my ^favorite ^joke ^xoxo',
+         'Why don\'t oysters give to charity? Because they are shellfish!',
+         'Why can\'t you hear a pterodactyl go to the bathroom? Because the "P" is silent!',
+         'Why was six afraid of seven? Because seven is a registered six offender.',
+         'What did the finger say to the thumb? I\'m in glove with you.',
+         'If towels could tell jokes they would probably have a dry sense of humor.',
+         'I asked a librarian if she was free this afternoon, she said she was all booked up.',
+         'Einstein developed a theory about space, and it was about time, too.',
+         'He didn\'t tell his mother that he ate some glue. His lips were sealed.',
+         'Two peanuts were walking in a tough neighborhood and one of them was a-salted.',
+         'The dead batteries were given out free of charge.',
+         'Two hats were hanging on a hat rack in the hallway. One hat says to the other, "You stay here, I\'ll go on a head.".',
+         'Pencils could be made with erasers at both ends, but what would be the point?',
+         'It was an emotional wedding. Even the cake was in tiers.',
+         'Sleeping comes so naturally to me, I could do it with my eyes closed.',
+         'Novice pirates make terrible singers because they can\'t hit the high seas.',
+         'My new theory on inertia doesn\'t seem to be gaining momentum.',
+         'I really wanted a camouflage shirt, but I couldn\'t find one.',
+         'I try wearing tight jeans, but I can never pull it off.',
+         'I knew a woman who owned a taser, man was she stunning!',
+         'I relish the fact that you\'ve mustard the strength to ketchup to me.',
+         'When the cannibal showed up late to the luncheon, they gave him the cold shoulder.',
+         'I saw a beaver movie last night, it was the best dam movie I\'ve ever seen.',
+         'I was struggling to figure out how lightning works then it struck me.',
+         'I used to have a fear of hurdles, but I got over it.',
+         'A new type of broom came out, it is sweeping the nation.',
+         'When Peter Pan punches, they Neverland.',
+         'A bicycle can\'t stand on its own because it is two-tired.',
+         'Atheism is a non-prophet organization.',
+         'I did a theatrical performance about puns. Really it was just a play on words',
+         'When the TV repairman got married the reception was excellent.',
+         'Why do ambassadors never get sick? Diplomatic immunity.',
+         'Two hydrogen atoms walk into a bar. One says, "I\'ve lost my electron." The other says, "Are you sure?" The first replies, "Yes, I\'m positive"',
+         'Without geometry, life is pointless',
+         'I didn\'t like my beard at first. Then it grew on me.',
+         'Velcro - what a rip off!',
+         'Some river valleys are absolutely gorges.',
+         'How do celebrities stay cool? They have many fans.',
+         'Two cannibals are eating a clown. One says to the other: "Does this taste funny to you?"',
+         'A vulture boards an airplane, carrying two dead raccoons. The stewardess looks at him and says, "I\'m sorry, sir, only one carrion allowed per passenger."',
+         'I went to buy some camouflage trousers the other day but I couldn\'t find any.',
+         'A jumper cable walks into a bar. The bartender says, "I\'ll serve you, but don\'t start anything."',
+         'Jokes about German sausage are the wurst.',
+         'Why were the Indians here first? They had reservations.',
+         'Did you hear about the cross-eyed teacher who lost her job because she couldn’t control her pupils?',
+         'What do you call a dinosaur with an extensive vocabulary? A thesaurus.',
+         'England has no kidney bank, but it does have a Liverpool.',
+         'Sea captains don’t like crew cuts.',
+         'A man’s home is his castle, in a manor of speaking.',
+         'Where do you find giant snails? On the ends of giant’s fingers.',
+         'This duck walks into a bar and orders a beer. “Four bucks,” says the bartender. “Put it on my bill.”',
+         'When she told me I was average, she was just being mean.',
+         'Four fonts walk into a bar. The barman says “Hey get out! We don’t want your type in here!”',
+         'A cartoonist was found dead in his home. Details are sketchy.',
+         'I told my girlfriend she drew her eyebrows too high. She seemed surprised.',
+         'A blind man walks into a bar. And a table. And a chair.',
+         'You heard the rumor going around about butter? Nevermind, I shouldn\'t spread it.',
+         'You know why you never see elephants hiding up in trees? Because they\'re really good at it.',
+         'What is red and smells like blue paint? Red paint.',
+         'Why do trees seem suspicious on sunny days? Dunno, they\'re just a bit shady.',
+         'Where does the General keep his armies? In his sleevies!',
+         'What do you call a fake noodle? An impasta',
+         'Why can\'t you tell a kleptomaniac a joke? They always take things literally',
+         'What do you get when you cross a dyslexic, an insomniac, and an agnostic? Someone who lays awake at night wondering if there is a dog.',
+         'What do you call a bear in the rain? A drizzly bear.',
+         'What do you call a bear with no teeth? A gummy bear',
+         'What\'s a polar bear\'s favorite food? Ice-bergers.',
+         'What do you call an elephant that doesn\'t matter? An irrelephant',
+         'What happened to the cow that jumped over the barbed wire fence? Udder destruction.',
+         'How many tickles does it take to make an octopus laugh? Ten tickles!',
+         'What do you call a cow with two legs? Your mom.',
+         'What do you call a cow with one leg? A Stake',
+         'What\'s a foot long and slippery? A slipper.',
+         'What red and bad for your teeth? A brick.',
+         'Want to hear a joke about construction? Nah, I\'m still working on it.',
+         'I bought some shoes from a drug dealer. I don\'t know what he laced them with, but I\'ve been tripping all day.',
+         'Why couldn\'t the bike stand up? It was too tired.',
+         'What did the coat say to the hat as they were leaving the house? You go on ahead.',
+         'What did the janitor say when he jumped out of the closet? SUPPLIES!!!',
+         'Why don\'t seagulls fly in the bay? Because then they\'d be bagels.',
+         'Why don\'t cannibals eat clowns? They taste funny.']
+while True:
+    if counter > 50:
+        pprint.pprint("Waiting 10 minutes")
+        time.sleep(300)
+        counter = 0
+    subreddit1 = r.get_subreddit('gifs')
+    subreddit1_comments = subreddit1.get_comments(limit=None)
+    subreddit2 = r.get_subreddit('circlejerk')
+    subreddit2_comments = subreddit2.get_comments(limit=None)
+    subreddit3 = r.get_subreddit('GetMotivated')
+    subreddit3_comments = subreddit3.get_comments(limit=None)
+    subreddit4 = r.get_subreddit('todayilearned')
+    subreddit4_comments = subreddit4.get_comments(limit=None)
+    subreddit5 = r.get_subreddit('lifeprotips')
+    subreddit5_comments = subreddit5.get_comments(limit=None)
+    subreddit6 = r.get_subreddit('mildlyinteresting')
+    subreddit6_comments = subreddit6.get_comments(limit=None)
+    subreddit_comments = itertools.chain(subreddit1_comments, subreddit2_comments, subreddit3_comments, subreddit4_comments, subreddit5_comments,
+                                         subreddit6_comments)
+    file = open('comments.txt', 'r')
+    already_done = set(line.strip() for line in file)
+    file.close()
+    pprint.pprint("Checking next list of comments")
+    try:
+        for comment in subreddit_comments:
+            if re.search("funny", comment.body, re.IGNORECASE) and comment.id not in already_done and comment.author.name != "saysjokes" and comment.author.name != "TerribleJokeBot":
+                try:
+                    comment.reply('>funny\n\n Did I hear funny? Here\'s something funny for you: ' + random.choice(jokes))
+                    comments = open('comments.txt', 'a')
+                    comments.write(comment.id + '\n')
+                    comments.close()
+                    pprint.pprint("success: funny")
+                    counter += 1
+                    time.sleep(time1)
+                except Exception as exception:
+                    pprint.pprint("Error commenting, not adding to completed")
+                    time.sleep(60)
+            if re.search("joke", comment.body, re.IGNORECASE) and comment.id not in already_done and comment.author.name != "saysjokes" and comment.author.name != "TerribleJokeBot":
+                try:
+                    comment.reply('>joke\n\n Did I hear joke? Here\'s a joke for you: ' + random.choice(jokes))
+                    comments = open('comments.txt', 'a')
+                    comments.write(comment.id + '\n')
+                    comments.close()
+                    pprint.pprint("success: joke")
+                    counter += 1
+                    time.sleep(time1)
+                except Exception as exception:
+                    pprint.pprint("Error commenting, not adding to completed")
+                    time.sleep(60)
+    except Exception as exception:
+        pprint.pprint("HTTP Error, skipping comments")
+    time.sleep(120)
